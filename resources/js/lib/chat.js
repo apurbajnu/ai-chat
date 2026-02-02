@@ -45,8 +45,8 @@ const createStarterMessage = () => ({
   createdAt: Date.now(),
 })
 
-const toOpenAIMessages = (history) => [
-  { role: 'system', content: SYSTEM_PROMPT },
+const toOpenAIMessages = (history, systemPrompt = SYSTEM_PROMPT) => [
+  { role: 'system', content: systemPrompt },
   ...history.map(({ role, content }) => ({ role, content })),
 ]
 
@@ -110,7 +110,7 @@ const computeUsage = (providerKey, model, usagePayload) => {
   }
 }
 
-async function callProvider(providerKey, { apiKey, model, baseUrl, history }) {
+async function callProvider(providerKey, { apiKey, model, baseUrl, history, systemPrompt }) {
   const provider = PROVIDERS[providerKey]
   if (!provider) {
     throw new Error('Please pick a supported provider.')
@@ -126,6 +126,9 @@ async function callProvider(providerKey, { apiKey, model, baseUrl, history }) {
 
   const requestInit = { method: 'POST', headers: {}, body: '' }
 
+  // Use provided system prompt or default
+  const finalSystemPrompt = systemPrompt || SYSTEM_PROMPT;
+
   if (providerKey === 'claude') {
     requestInit.headers = {
       'Content-Type': 'application/json',
@@ -135,7 +138,7 @@ async function callProvider(providerKey, { apiKey, model, baseUrl, history }) {
     requestInit.body = JSON.stringify({
       model: model || provider.defaultModel,
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system: finalSystemPrompt,
       messages: toClaudeMessages(history),
     })
   } else {
@@ -146,7 +149,7 @@ async function callProvider(providerKey, { apiKey, model, baseUrl, history }) {
     requestInit.body = JSON.stringify({
       model: model || provider.defaultModel,
       temperature: 0.7,
-      messages: toOpenAIMessages(history),
+      messages: toOpenAIMessages(history, finalSystemPrompt),
     })
   }
 

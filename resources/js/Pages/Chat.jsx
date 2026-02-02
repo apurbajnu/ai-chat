@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import ThreadList from '../Components/Chat/ThreadList'
 import SettingsPanel from '../Components/Chat/SettingsPanel'
+import MemorySidebar from '../Components/Memory/MemorySidebar'
 import {
   PROVIDERS,
   callProvider,
@@ -52,6 +53,8 @@ export default function Chat({ aiConfig }) {
   const [usageTotals, setUsageTotals] = useState({ ...EMPTY_USAGE })
   const [currentThreadId, setCurrentThreadId] = useState(null)
   const [threadRefreshKey, setThreadRefreshKey] = useState(0)
+  const [relevantMemories, setRelevantMemories] = useState([])
+  const [showMemorySidebar, setShowMemorySidebar] = useState(true)
 
   const selectedProvider = PROVIDERS[providerKey]
 
@@ -113,11 +116,37 @@ export default function Chat({ aiConfig }) {
         model: model,
       })
 
+      // Get relevant memories for this conversation
+      let memoryContext = ''
+      if (threadId) {
+        try {
+          const response = await fetch(`/api/threads/${threadId}/memories`)
+          const data = await response.json()
+          if (data.memories && data.memories.length > 0) {
+            // Format memories for AI context
+            memoryContext = "RELEVANT USER MEMORIES:\n"
+            memoryContext += "------------------------\n\n"
+
+            data.memories.forEach(memory => {
+              memoryContext += `Category: ${memory.category}\n`
+              memoryContext += `Title: ${memory.title}\n`
+              memoryContext += `Content: ${memory.content}\n`
+              memoryContext += `Last Updated: ${new Date(memory.updated_at).toLocaleDateString()}\n`
+              memoryContext += `Access Count: ${memory.access_count}\n`
+              memoryContext += "---\n"
+            })
+          }
+        } catch (memErr) {
+          console.error('Error fetching memories:', memErr)
+        }
+      }
+
       const { text: replyText, usage } = await callProvider(providerKey, {
         apiKey,
         model,
         baseUrl,
         history: conversation,
+        systemPrompt: memoryContext ? `${memoryContext}\n\n${PROVIDERS[providerKey].systemPrompt || ''}` : PROVIDERS[providerKey].systemPrompt || undefined
       })
 
       setMessages((current) =>
@@ -171,6 +200,7 @@ export default function Chat({ aiConfig }) {
     setError('')
     setUsageTotals({ ...EMPTY_USAGE })
     setCurrentThreadId(null)
+    setRelevantMemories([])
   }
 
   const handleThreadSelect = async (threadId) => {
@@ -211,6 +241,7 @@ export default function Chat({ aiConfig }) {
     setMessages([createStarterMessage()])
     setError('')
     setUsageTotals({ ...EMPTY_USAGE })
+    setRelevantMemories([])
   }
 
   const handleQuestionSelect = (threadId, question, answer) => {
@@ -242,6 +273,10 @@ export default function Chat({ aiConfig }) {
 
     setMessages(qaPair.length > 0 ? qaPair : [createStarterMessage()])
     setError('')
+  }
+
+  const handleMemoriesChange = (memories) => {
+    setRelevantMemories(memories)
   }
 
   const providerOptions = useMemo(
@@ -292,6 +327,13 @@ export default function Chat({ aiConfig }) {
                     className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-600 transition hover:bg-slate-200"
                   >
                     New Chat
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowMemorySidebar(!showMemorySidebar)}
+                    className="rounded-lg bg-indigo-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-indigo-600 transition hover:bg-indigo-200"
+                  >
+                    {showMemorySidebar ? 'Hide Memory' : 'Show Memory'}
                   </button>
                 </div>
               </div>
@@ -442,6 +484,14 @@ export default function Chat({ aiConfig }) {
             </dl>
           </div>
         </div>
+
+        {/* Memory Sidebar */}
+        {showMemorySidebar && (
+          <MemorySidebar
+            threadId={currentThreadId}
+            onMemoriesChange={handleMemoriesChange}
+          />
+        )}
 
         {aiConfig?.allowOverride !== false && (
           <>

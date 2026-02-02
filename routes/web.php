@@ -51,6 +51,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/sub-threads', [\App\Http\Controllers\SubThreadController::class, 'index']);
         Route::post('/sub-threads', [\App\Http\Controllers\SubThreadController::class, 'store']);
         Route::delete('/sub-threads/{id}', [\App\Http\Controllers\SubThreadController::class, 'destroy']);
+
+        // Memory API routes
+        Route::get('/memories', [\App\Http\Controllers\MemoryController::class, 'index']);
+        Route::post('/memories', [\App\Http\Controllers\MemoryController::class, 'store']);
+        Route::get('/memories/{id}', [\App\Http\Controllers\MemoryController::class, 'show']);
+        Route::put('/memories/{id}', [\App\Http\Controllers\MemoryController::class, 'update']);
+        Route::delete('/memories/{id}', [\App\Http\Controllers\MemoryController::class, 'destroy']);
+        Route::get('/memories/search', [\App\Http\Controllers\MemoryController::class, 'search']);
+        Route::get('/threads/{id}/memories', [\App\Http\Controllers\MemoryController::class, 'getRelevantToThread']);
     });
 });
 

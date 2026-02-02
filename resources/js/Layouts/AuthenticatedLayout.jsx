@@ -67,7 +67,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             Profile
                                         </Dropdown.Link>
                                         <Dropdown.Link
-                                            href={route('logout')}
+                                            href={route('tyro-login.logout')}
                                             method="post"
                                             as="button"
                                         >
@@ -152,7 +152,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
-                                href={route('logout')}
+                                href={route('tyro-login.logout')}
                                 as="button"
                             >
                                 Log Out

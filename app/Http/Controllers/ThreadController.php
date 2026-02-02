@@ -3,10 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Thread;
+use App\Services\MemoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
 {
+    protected $memoryService;
+
+    public function __construct(MemoryService $memoryService)
+    {
+        $this->memoryService = $memoryService;
+    }
+
     public function index(Request $request)
     {
         $limit = $request->get('limit', 50);

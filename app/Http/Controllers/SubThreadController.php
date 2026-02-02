@@ -4,10 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\SubThread;
 use App\Models\Thread;
+use App\Services\MemoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubThreadController extends Controller
 {
+    protected $memoryService;
+
+    public function __construct(MemoryService $memoryService)
+    {
+        $this->memoryService = $memoryService;
+    }
+
     public function index(Request $request)
     {
         $validated = $request->validate([
@@ -38,7 +47,35 @@ class SubThreadController extends Controller
         // Update thread's updated_at timestamp
         Thread::where('id', $validated['thread_id'])->touch();
 
+        // Extract and save memories if this is a user message
+        if ($validated['role'] === 'user') {
+            $this->processMemoryForMessage($subThread, $validated['thread_id']);
+        }
+
         return response()->json($subThread, 201);
+    }
+
+    /**
+     * Process memory extraction for a new message
+     */
+    private function processMemoryForMessage(SubThread $subThread, int $threadId): void
+    {
+        // Extract potential memory from the user's message
+        $memoryData = $this->memoryService->extractMemoryFromConversation(
+            $subThread->content,
+            Auth::id(),
+            $threadId
+        );
+
+        if ($memoryData) {
+            // Create the memory
+            $this->memoryService->createMemory(
+                $memoryData,
+                Auth::id(),
+                $threadId,
+                $subThread->id
+            );
+        }
     }
 
     public function destroy($id)

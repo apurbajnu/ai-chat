@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { threadAPI } from '../../lib/api'
+import axios from 'axios'
 
 export default function ThreadList({
   currentThreadId,
@@ -12,6 +13,7 @@ export default function ThreadList({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [loadingSubThreads, setLoadingSubThreads] = useState({})
+  const [threadsWithMemories, setThreadsWithMemories] = useState({})
 
   useEffect(() => {
     loadThreads()
@@ -23,6 +25,21 @@ export default function ThreadList({
       setError('')
       const data = await threadAPI.getAll()
       setThreads(data.threads || [])
+
+      // For each thread, check if it has associated memories
+      const threadMemories = {}
+      for (const thread of data.threads || []) {
+        try {
+          const response = await axios.get(`/api/threads/${thread.id}/memories`)
+          if (response.data.memories && response.data.memories.length > 0) {
+            threadMemories[thread.id] = response.data.memories.length
+          }
+        } catch (err) {
+          // Ignore errors for individual thread memory checks
+          console.error(`Failed to load memories for thread ${thread.id}:`, err)
+        }
+      }
+      setThreadsWithMemories(threadMemories)
     } catch (err) {
       setError(err.message)
       console.error('Failed to load threads:', err)
@@ -43,7 +60,7 @@ export default function ThreadList({
         const thread = await threadAPI.getById(threadId)
 
         // Filter to show only user messages (questions), skip first one as it's the main thread
-        const questions = (thread.sub_threads || [])
+        const questions = thread.sub_threads
           .filter((st) => st.role === 'user')
           .slice(1) // Skip first question as it's the main thread
 
@@ -52,7 +69,7 @@ export default function ThreadList({
           [threadId]: {
             isExpanded: true,
             questions: questions,
-            allSubThreads: thread.sub_threads || [],
+            allSubThreads: thread.sub_threads,
           },
         }))
       } catch (err) {
@@ -232,15 +249,25 @@ export default function ThreadList({
                         onClick={() => handleMainThreadClick(thread.id)}
                         className="min-w-0 flex-1 cursor-pointer"
                       >
-                        <h3
-                          className={`truncate text-sm font-medium ${
-                            currentThreadId === thread.id
-                              ? 'text-indigo-900'
-                              : 'text-slate-900'
-                          }`}
-                        >
-                          {thread.title}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                          <h3
+                            className={`truncate text-sm font-medium ${
+                              currentThreadId === thread.id
+                                ? 'text-indigo-900'
+                                : 'text-slate-900'
+                            }`}
+                          >
+                            {thread.title}
+                          </h3>
+                          {threadsWithMemories[thread.id] > 0 && (
+                            <span
+                              className="flex items-center justify-center h-5 w-5 rounded-full bg-indigo-100 text-xs text-indigo-800"
+                              title={`${threadsWithMemories[thread.id]} memories associated with this thread`}
+                            >
+                              {threadsWithMemories[thread.id]}
+                            </span>
+                          )}
+                        </div>
                         <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
                           <span>{Math.ceil((thread.message_count || 0) / 2)} questions</span>
                           <span>•</span>
