@@ -7,6 +7,23 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## AI Chat with Memory System
+
+This is an AI chat application built with Laravel and React that includes an advanced memory system allowing the AI to remember important information across conversations.
+
+### Features
+
+- **Multi-AI Provider Support**: Supports OpenAI, Claude, and custom OpenAI-compatible APIs
+- **Conversation Threading**: Maintains chat history in threads with sub-messages
+- **Usage Tracking**: Tracks token usage and estimated costs
+- **Persistent Storage**: Saves conversations to the database
+- **Advanced Memory System**:
+  - Automatic memory extraction from user messages
+  - Contextual recall during conversations
+  - Memory management interface
+  - Thread association for better context
+  - Memory categorization (personal, preferences, facts, etc.)
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
@@ -27,33 +44,30 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## AI Memory System
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This application includes an advanced memory system that allows the AI to remember important information across conversations:
 
-### Premium Partners
+- **Automatic Memory Extraction**: The system intelligently identifies and saves important user information
+- **Contextual Recall**: Memories are retrieved and provided to the AI during relevant conversations
+- **Memory Management**: Users can view, search, and manage their stored memories
+- **Thread Association**: Memories are linked to specific conversation threads for better context
+- **Memory Categories**: Organizes memories by type (personal, preferences, facts, etc.)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Setup Instructions
+
+1. Clone the repository
+2. Run `composer install` and `npm install`
+3. Set up your database and run migrations
+4. Configure your AI provider API keys in the .env file
+5. Run the application with `php artisan serve` and `npm run dev`
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+This AI Chat application with memory system is also licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
