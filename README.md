@@ -1,17 +1,8 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AI Chat with Memory System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+An advanced AI chat application built with Laravel and React that includes an intelligent memory system allowing the AI to remember important information across conversations.
 
-## AI Chat with Memory System
-
-This is an AI chat application built with Laravel and React that includes an advanced memory system allowing the AI to remember important information across conversations.
-
-### Features
+## Features
 
 - **Multi-AI Provider Support**: Supports OpenAI, Claude, and custom OpenAI-compatible APIs
 - **Conversation Threading**: Maintains chat history in threads with sub-messages
@@ -23,26 +14,7 @@ This is an AI chat application built with Laravel and React that includes an adv
   - Memory management interface
   - Thread association for better context
   - Memory categorization (personal, preferences, facts, etc.)
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Modern UI**: Clean, responsive interface built with React and Tailwind CSS
 
 ## AI Memory System
 
@@ -54,20 +26,87 @@ This application includes an advanced memory system that allows the AI to rememb
 - **Thread Association**: Memories are linked to specific conversation threads for better context
 - **Memory Categories**: Organizes memories by type (personal, preferences, facts, etc.)
 
+## Tech Stack
+
+- **Backend**: Laravel PHP Framework
+- **Frontend**: React with Inertia.js
+- **Database**: MySQL/PostgreSQL with Eloquent ORM
+- **Styling**: Tailwind CSS
+- **Authentication**: Laravel Breeze with Tyro-Login
+- **Real-time**: Built-in session management
+
 ## Setup Instructions
 
 1. Clone the repository
-2. Run `composer install` and `npm install`
-3. Set up your database and run migrations
-4. Configure your AI provider API keys in the .env file
-5. Run the application with `php artisan serve` and `npm run dev`
+   ```bash
+   git clone https://github.com/apurbajnu/ai-chat.git
+   cd ai-chat
+   ```
+
+2. Install PHP dependencies
+   ```bash
+   composer install
+   ```
+
+3. Install Node.js dependencies
+   ```bash
+   npm install
+   ```
+
+4. Copy the environment file and set your configurations
+   ```bash
+   cp .env.example .env
+   ```
+
+5. Generate application key
+   ```bash
+   php artisan key:generate
+   ```
+
+6. Set up your database and run migrations
+   ```bash
+   php artisan migrate
+   ```
+
+7. Configure your AI provider API keys in the `.env` file:
+   ```
+   OPENAI_API_KEY=your-openai-api-key
+   CLAUDE_API_KEY=your-claude-api-key
+   CUSTOM_AI_API_KEY=your-custom-provider-api-key
+   ```
+
+8. Build frontend assets
+   ```bash
+   npm run build
+   # or for development
+   npm run dev
+   ```
+
+9. Start the development server
+   ```bash
+   php artisan serve
+   ```
+
+10. Access the application at `http://localhost:8000`
+
+## Configuration
+
+The application supports multiple AI providers through configuration:
+
+- **OpenAI**: Set `AI_PROVIDER=openai` and provide `OPENAI_API_KEY`
+- **Claude (Anthropic)**: Set `AI_PROVIDER=claude` and provide `CLAUDE_API_KEY`
+- **Custom Provider**: Set `AI_PROVIDER=custom` and provide `CUSTOM_AI_API_KEY` along with `CUSTOM_AI_BASE_URL`
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This AI Chat application with memory system is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-This AI Chat application with memory system is also licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Acknowledgments
+
+- Built with the Laravel PHP framework
+- Frontend powered by React and Inertia.js
+- Styled with Tailwind CSS
